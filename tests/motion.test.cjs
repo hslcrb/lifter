@@ -1,0 +1,5 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');const {JSDOM}=require('jsdom');const fs=require('fs');
+function setup(reduced){const dom=new JSDOM('<p>L</p>',{runScripts:'outside-only'});dom.window.matchMedia=()=>({matches:reduced});dom.window.eval(fs.readFileSync('extension/motion.js','utf8'));return dom.window;}
+test('reduced motion creates no overlay and no geometry callback',()=>{const w=setup(true);const f=w.LifterMotion.create(w.document,true);assert.equal(f.glyph,null);assert.equal(w.document.querySelector('[data-lifter-root]'),null);f.finish();f.clear();});
+test('disabled motion creates no overlay',()=>{const w=setup(false);const f=w.LifterMotion.create(w.document,false);assert.equal(f.glyph,null);assert.equal(w.document.querySelector('[data-lifter-root]'),null);});
+test('overlay is isolated and removed by clear',()=>{const w=setup(false);const f=w.LifterMotion.create(w.document,true);const host=w.document.querySelector('[data-lifter-root]');assert.ok(host);assert.equal(host.shadowRoot,null);assert.equal(host.getAttribute('aria-hidden'),'true');f.clear();assert.equal(w.document.querySelector('[data-lifter-root]'),null);});

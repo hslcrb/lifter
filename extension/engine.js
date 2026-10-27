@@ -17,16 +17,17 @@
     function status() {
       let count = 0;
       for (const [node, item] of saved) {
-        if (!node.isConnected || node.data !== item.after) { saved.delete(node); continue; }
+        if (!node.isConnected || node.data !== item.after) continue;
         count += item.count;
       }
-      return { count, busy };
+      return { count, busy, pending: saved.size };
     }
-    async function steal({ lowercase = false, onGlyph = () => {} } = {}) {
+    async function steal({ lowercase = false, onGlyph = null } = {}) {
       if (busy) return { count: 0, busy: true };
+      if (doc.designMode?.toLowerCase() === 'on') return { count: 0, total: status().count };
       busy = true;
       const run = ++generation;
-      let count = 0, visited = 0, particles = 0;
+      let count = 0, visited = 0, particles = 0, attempts = 0;
       const roots = doc.body ? [doc.body] : [];
       const pattern = lowercase ? /[Ll]/g : /L/g;
       try {
@@ -43,10 +44,12 @@
               if (node.shadowRoot) roots.push(node.shadowRoot);
             } else if (node.isConnected && !excluded(node.parentElement || node.getRootNode().host)) {
               const before = node.data;
-              const hits = [...before.matchAll(pattern)];
-              if (hits.length) {
-                for (const hit of hits) {
-                  if (particles >= 24) break;
+              const after = before.replace(pattern, '');
+              const removed = before.length - after.length;
+              if (removed) {
+                if (onGlyph) for (const hit of before.matchAll(pattern)) {
+                  if (particles >= 24 || attempts >= 96) break;
+                  attempts++;
                   try {
                     const range = doc.createRange();
                     range.setStart(node, hit.index); range.setEnd(node, hit.index + 1);
@@ -59,10 +62,9 @@
                 const old = saved.get(node);
                 const original = old && old.after === before ? old.original : before;
                 const prior = old && old.after === before ? old.count : 0;
-                const after = before.replace(pattern, '');
-                saved.set(node, { original, after, count: prior + hits.length });
+                saved.set(node, { original, after, count: prior + removed });
                 node.data = after;
-                count += hits.length;
+                count += removed;
               }
             }
             if (++visited % 160 === 0) await new Promise(resolve => win.setTimeout(resolve, 0));
