@@ -1,29 +1,21 @@
-# Verification — floating heist 2.0.0 — 2026-10-27
+# Verification — Lifter 3.0.0
 
-## Passed
-- `npm test`: **27/27**, node:test + jsdom.
-- Toolbar injection is a singleton and uses a service worker; manifest has no popup. Restricted injection gets a descriptive title and badge.
-- Panel persists after outside click; close/reopen retains restore state. Collapse, copy-mode selection, native copy handler and copy confirmation tested.
-- Default drag prevention; right-click enables highlighter mode. Only selected panel text is written; selection outside the panel is untouched.
-- Unicode L/l/ㄴ family, supplementary mathematical characters and attached accents counted as letters, restored exactly. NFD Hangul syllable components remain intact; standalone Jamo collected.
-- Same-node restoration, working link listeners, unchanged href; editable, hidden, script/style, SVG/select and document.designMode exclusions.
-- Dynamic additions, open shadow roots, application-edit conflicts, bounded geometry (96 attempts / 24 flights), chunk cancellation.
-- Reduced/disabled motion creates no overlay; cleanup cancels animation resources. Copy confetti is bounded and targeted.
-- Pending clipboard completion after close cannot revive effects; reentering copy mode cancels the previous auto-exit. Restore during a pending collection retains its result message.
-- `node --check` on all five runtime scripts.
-- `python3 scripts/package.py`: MV3, exact permissions, no host permissions and referenced files checked; `dist/lifter-2.0.0.zip` generated.
-- Editable Figma floating ready/collected/copy states and website composition updated. Screenshot inspected after correcting background paint cache; variable bindings retained, flight token 720ms.
+- `npm test`: **41 tests passing** (node:test + jsdom + fake-indexeddb).
+- Korean 롯데→오떼, 롯데리아→오떼이아, 라면→아면, 서울→서우, compound rieul finals, idempotence and exact original-node restore.
+- Existing letter family, editing/hidden exclusions, conflicts, dynamic/shadow text and bounded motion retained.
+- IndexedDB persistence between connections and origin-specific site+image deletion.
+- Permission request happens synchronously before awaiting storage. Remember registers content scripts. Forget unregisters/broadcasts/restores/removes origin grant; delayed permission cannot recreate forgotten memory.
+- Automatic revisits, mutation during slow OCR, delayed image load and cancellation/restore epoch covered.
+- OCR rectangles require confident target symbols; line-height rectangles are bounded to image dimensions. Original presentation restored; new image sources remove stale masks.
+- `node scripts/verify-ocr.cjs`: production offscreen processing with real local Tesseract eng+kor + canvas. Fixture `LOVE little LIFT`: **4** L/l symbols. All erased rectangles have alpha=0; untouched background remains alpha=255.
+- Bundled LSTM scalar/SIMD core files verified to contain embedded WASM; local models and licenses present. Runtime extension contains no npm node_modules or remote executable imports in app code.
+- Font specimen rendered with actual bundled fonts; original binaries unmodified. Figma updated, native text uses explicitly documented Noto fallback because the tool has neither requested font.
 
-## Independent review
-A fresh reviewer identified decomposed Hangul corruption and a late clipboard completion after panel close. Both were reproduced with failing regression tests and fixed. Copy-mode collapse-label and stale timer behavior were covered together; pending collection no longer overwrites restore feedback.
+## Independent review fixes
+The reviewer reproduced lost dynamic content during OCR, missed slow image loads, late restore unpausing, pending permission overriding Forget, and diagnosed Chrome permission gesture timing. Targeted regressions and full suite pass. Cache eviction now removes only necessary oldest entries.
 
-## Limits of this verification
-An actual unpacked Chrome/Edge installation and real-site rendering have **not** been verified. The connected browser could not reach the workspace server in the earlier session; inline previews were blocked by browser policy. jsdom does not establish native Range geometry, trusted clipboard events in Shadow DOM, CSS layout, or Web Animations appearance. Figma screenshots show editable design output, not running-extension evidence.
+## Browser validation boundary
+No actual unpacked Chrome extension installation has been exercised. Node verifies OCR/alpha and jsdom verifies behavior; these do not establish Chromium extension permission dialogs, content security policies, rendered CSS image replacement, Shadow DOM clipboard or visual animation. Supported image formats are static PNG/JPEG/WebP/BMP, <=8MB and <=4MP. GIF/SVG/background/canvas/iframe images, inaccessible or redirected image URLs are skipped. OCR is fallible and does not identify every stylized L; 75 confidence threshold favors keeping uncertain pixels. Per scan, 40 images are processed sequentially; remembered mode continues subsequent batches.
 
 ## Manual acceptance
-1. Load `extension/` as an unpacked Chrome/Edge extension, or extract the installation ZIP. Reload the extension if upgrading from v1, then refresh existing test tabs.
-2. On an HTTPS page, click the toolbar icon; panel stays visible through outside clicks and scrolling. Collapse, close, reopen.
-3. Collect L/l/ㄴ/lookalikes; verify arcs/rings/bursts/impact confetti. Restore and verify links/inputs are unaffected.
-4. Right-click within panel → Copy. Drag text; Ctrl/Cmd+C or selection-copy button. Paste elsewhere and verify exact text and confetti. Other page selections remain native.
-5. Test OS reduced motion, effect toggle, narrow viewport and short window. Test `chrome://` restriction feedback.
-6. Serve `docs/demo/` using the README command for a reproducible playground with the actual engine, panel and motion modules.
+Install extension ZIP, reload extension and test page. Collect on an HTTPS site, allow that origin, verify Korean examples. Reload and navigate within the origin: text is reapplied after document_idle (a first-paint flash is possible). Add dynamic text and delay image loading. Click image scan and allow needed image origins; verify holes expose the website underneath. Restore during OCR, then mutate page: it remains paused. Forget, reload and verify no automatic collection. Test copy mode, reduced motion and restrictive CSP pages. Model processing is local; image downloads still use the network.

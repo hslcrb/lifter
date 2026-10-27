@@ -17,3 +17,11 @@ Task: create Lifter browser extension, public repository and editable Figma UI.
 - Curated lookalikes avoid I/1 and protect NFD Hangul syllables. Runtime still local and dependency-free.
 - 27 tests pass; independent review findings fixed. Figma same file updated with three panel states, website composition and 720ms flight token.
 - Actual browser installation/native clipboard/rendering remains explicitly unverified.
+
+## v3 revision
+- User explicitly requested image OCR/alpha holes, Korean pronunciation jokes, persistent site behavior and complete release ZIPs.
+- Local Tesseract 6.0.1 eng+kor packaged with fonts; real fixture yields 4 L-family rectangles and production alpha checks pass.
+- IndexedDB site settings + content-hashed PNG cache; optional site/image-origin permission prompts, registered content scripts, mutation and delayed-load processing.
+- Does not replace live pages with stale cached HTML. HTTP cache clearing does not clear extension-owned memory; explicit Forget does.
+- Noonnu Jalnan / Pretendard visually inspected and original licenses bundled. Exact specimen rendered; Figma native text uses annotated fallback because its font inventory lacks both.
+- Independent review: permission user-gesture timing, dirty rescan, delayed image load, restore epoch, pending-grant forget race, and cache eviction corrected. 41 tests passing before release.
