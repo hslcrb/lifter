@@ -1,6 +1,6 @@
 (() => {
   if (globalThis.LifterPanel) return;
-  function create(doc, engine, {motion = true, save = () => {}, hidden = false} = {}) {
+  function create(doc, engine, {motion = true, save = () => {}, hidden = false, compact = false, intro = null} = {}) {
     const win = doc.defaultView;
     const host = doc.createElement('div');
     host.dataset.lifterRoot = ''; host.dataset.lifterPanel = '';
@@ -64,8 +64,10 @@
     $('minimize').onclick=()=>{const minimized=card.classList.toggle('minimized');$('minimize').textContent=minimized?'+':'−';$('minimize').setAttribute('aria-expanded',String(!minimized));$('minimize').setAttribute('aria-label',minimized?'패널 펼치기':'패널 접기');$('copy-menu').hidden=true;};
     $('close').onclick=()=>{operation++;win.clearTimeout(copiedTimer);host.style.setProperty('display','none','important');fx?.clear();};
     card.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();if(card.classList.contains('copying'))copyMode(false);else if(!$('copy-menu').hidden)$('copy-menu').hidden=true;else $('close').click();}});
-    function show(){host.style.removeProperty('display');sync();card.focus({preventScroll:true});}
+    function show(){if(compact){card.classList.remove('minimized');$('minimize').textContent='−';$('minimize').setAttribute('aria-expanded','true');$('minimize').setAttribute('aria-label','패널 접기');}host.style.removeProperty('display');sync();card.focus({preventScroll:true});}
     function destroy(){destroyed=true;operation++;engine.cancel();fx?.clear();win.clearTimeout(copiedTimer);host.remove();}
+    if(compact){card.classList.add('minimized');$('minimize').textContent='+';$('minimize').setAttribute('aria-expanded','false');$('minimize').setAttribute('aria-label','패널 펼치기');}
+    if(intro)status(intro);
     sync();return {show,destroy,sync};
   }
   globalThis.LifterPanel={create};

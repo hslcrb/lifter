@@ -3,7 +3,7 @@
 <p align="center"><b>A tiny heist. A pocket full of Ls.</b><br>웹페이지의 L을 주머니에 쏙. 정말로 가져가는 확장 프로그램.</p>
 
 ## 바로 사용하기
-1. [설치 ZIP 다운로드](https://github.com/hslcrb/lifter/raw/refs/heads/main/dist/lifter-3.0.0.zip) 후 압축을 풉니다.
+1. [설치 ZIP 다운로드](https://github.com/hslcrb/lifter/raw/refs/heads/main/dist/lifter-3.1.0.zip) 후 압축을 풉니다.
 2. Chrome의 `chrome://extensions` 또는 Edge의 `edge://extensions`에서 개발자 모드를 켭니다.
 3. **압축해제된 확장 프로그램을 로드** → `manifest.json`이 있는 폴더를 선택합니다.
 4. 일반 웹사이트에서 Lifter 아이콘을 누르면 **사이트 위에 플로팅 패널**이 나타납니다. **L을 가져가~**를 누르세요.
@@ -19,7 +19,7 @@ v1에서 업데이트했다면 확장 관리 화면에서 새로고침한 뒤, �
 - **계속 기억**: 첫 수집 때 사이트 권한을 허용하면 다음 방문과 동적 로딩에도 자동 적용합니다. 확장 전용 IndexedDB에 사이트 규칙과 가공 이미지 캐시를 보관합니다. 전체 HTML을 얼려서 재생하지 않아 사이트 동작을 유지합니다.
 - **돌려놓기**는 현재 탭에서 잠시 중지. **기억 지우기**는 해당 사이트의 기억·이미지 캐시·자동 실행을 지웁니다. 일반 HTTP 캐시 삭제와 확장 데이터 삭제는 별개입니다.
 - **웹폰트**: 눈누에서 확인한 여기어때 잘난체 + Pretendard Regular/Bold, 원본·라이선스 동봉. [폰트 표본](docs/TYPOGRAPHY.md)
-- [릴리즈](https://github.com/hslcrb/lifter/releases/tag/v3.0.0): **설치 전체 ZIP**(OCR·폰트 포함)과 **전체 소스 ZIP**.
+- [릴리즈](https://github.com/hslcrb/lifter/releases/tag/v3.1.0): **설치 전체 ZIP**(OCR·폰트 포함)과 **전체 소스 ZIP**.
 
 ## 작은 장난, 꼼꼼한 동작
 - **L · l · ㄴ**은 무조건 한패. 전각·수학체 L, ℓ/ℒ/Ⅼ, ㄴ/ᄂ/ᆫ/ﾤ, └/┗/╰/⌊/∟ 및 라틴 L 악센트 변형도 수집합니다. 숫자 1, 대문자 I, 한글은 위 발음 장난 규칙을 적용하고 분해형 음절은 보존합니다.
@@ -65,3 +65,9 @@ python3 -m http.server 8765
 [설계](docs/superpowers/specs/2026-10-27-lifter-design.md) · [검증](docs/VERIFICATION.md)
 
 [서드파티 고지](docs/THIRD-PARTY.md) · [검증과 제한](docs/VERIFICATION.md)
+
+## 내장 놀이터 — 월요일 회피 연구소
+
+확장 아이콘 우클릭 → 옵션을 누르거나, 새 탭/브라우저 내부 화면에서 확장 아이콘을 누르면 열립니다. 오프라인으로 동작하는 가상의 콜라주 페이지입니다. `싹 가져가`로 텍스트·한글·포스터를 수집하고, 원상복구 또는 플로팅 주머니의 기억 지우기로 되돌릴 수 있습니다. 새 댓글도 기억 상태에 따라 자동 수집합니다. 소리는 체크할 때만 재생됩니다.
+
+직접 그린 이미지 포스터는 알려진 글자 좌표를 사용해 7곳을 즉시 투명 처리합니다. 일반 웹사이트 이미지 OCR과 구분됩니다. 놀이터 기억은 확장 페이지의 localStorage에 저장되며 일반 사이트 기억(IndexedDB)과 별개입니다.

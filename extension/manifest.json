@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Lifter — L을 가져가~",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "웹페이지의 L을 주머니에 쏙! 클릭 한 번으로 수집하고 다시 돌려놓는 작은 장난.",
   "permissions": [
     "activeTab",
@@ -46,5 +46,9 @@
         "https://*/*"
       ]
     }
-  ]
+  ],
+  "options_ui": {
+    "page": "playground/index.html",
+    "open_in_tab": true
+  }
 }

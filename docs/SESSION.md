@@ -25,3 +25,8 @@ Task: create Lifter browser extension, public repository and editable Figma UI.
 - Does not replace live pages with stale cached HTML. HTTP cache clearing does not clear extension-owned memory; explicit Forget does.
 - Noonnu Jalnan / Pretendard visually inspected and original licenses bundled. Exact specimen rendered; Figma native text uses annotated fallback because its font inventory lacks both.
 - Independent review: permission user-gesture timing, dirty rescan, delayed image load, restore epoch, pending-grant forget race, and cache eviction corrected. 41 tests passing before release.
+
+## v3.1 내장 놀이터
+- Instagram De89lMVku_R img_index=3 직접 시각 확인: 흰 콜라주, 빨간 강조, 비대칭 사족, 리액션 컷. 원본 사진/콘텐츠 재사용 없음.
+- 월요일 회피 연구소, 즉시 이미지 수집, 동적 댓글, 선택 효과음, 접힌 플로팅 패널, 옵션 탭 진입 추가.
+- Fresh reviewer의 두 취소 경합 문제를 각각 RED→GREEN 회귀 테스트로 수정. 전체47 통과. 브라우저 실제 클릭으로 수집/복원/재방문 확인.

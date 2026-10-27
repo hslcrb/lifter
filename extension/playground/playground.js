@@ -1,0 +1,24 @@
+(() => {
+  const $=id=>document.getElementById(id),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let panel,fx,cutTimer,audio,round=0,busy=false,operation=0;
+  const poster=$('poster'),canvas=document.createElement('canvas');canvas.width=1000;canvas.height=330;
+  const ctx=canvas.getContext('2d');let original='',masked=false;const boxes=[];
+  // We authored this poster, so its exact letter rectangles are known. This is
+  // deterministic raster removal, not a simulated OCR result.
+  function rasterText(text,x,y,size){ctx.font=`bold ${size}px Arial`;for(const letter of text){const width=ctx.measureText(letter).width;ctx.fillText(letter,x,y);if(/[Ll]/.test(letter))boxes.push({x:Math.floor(x)-1,y:Math.floor(y-size),width:Math.ceil(width)+2,height:size+12,letter});x+=width;}}
+  function drawPoster(){ctx.fillStyle='#7654D6';ctx.fillRect(0,0,1000,330);ctx.fillStyle='#F9EF53';ctx.fillRect(22,22,956,286);ctx.fillStyle='#211C2D';rasterText('LOVE little LIFT',52,175,100);rasterText('EXHIBIT A. VERY IMPORTANT LETTERS.',52,62,17);rasterText('PLEASE DO NOT STEAL. (this sign cannot stop you)',52,264,18);original=canvas.toDataURL('image/png');poster.src=original;}
+  drawPoster();
+  const image={count:()=>masked?boxes.length:0,collect(onGlyph){if(masked)return 0;const r=poster.getBoundingClientRect();boxes.forEach((b,index)=>{ctx.clearRect(b.x,b.y,b.width,b.height);onGlyph?.({letter:b.letter,x:r.left+b.x*r.width/1000,y:r.top+b.y*r.height/330,size:b.height*r.height/330,index});});poster.src=canvas.toDataURL('image/png');masked=true;return boxes.length;},restore(){if(!masked)return 0;masked=false;boxes.length=0;drawPoster();return imageBoxesCount;}};
+  const imageBoxesCount=boxes.length;
+  let storage;try{storage=localStorage;}catch{storage={getItem(){},setItem(){throw Error()},removeItem(){}};}
+  const engine=LifterPlaygroundEngine.create(document,{storage,image,onChange(kind,count){panel?.sync();if(kind==='text'||kind==='image'){if(count)editorCut(count);$('live').textContent=count?`${count}개 실종. 연구 성과가 이런 식으로…`:'이미 가져갔잖아요. 욕심쟁이.';}if(kind==='restore'){operation++;fx?.clear();$('live').textContent='전부 돌려놨어. 없던 일로 해 주는 거임.';clearTimeout(cutTimer);$('editor-cut').hidden=true;}if(kind==='forget')$('live').textContent='기억까지 지웠어. 초면인 척 가능.';}});
+  function blip(){if(!$('sound').checked)return;try{audio??=new (window.AudioContext||window.webkitAudioContext)();audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type='square';o.frequency.setValueAtTime(640,audio.currentTime);o.frequency.exponentialRampToValueAtTime(90,audio.currentTime+.13);g.gain.setValueAtTime(.035,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.16);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.17);}catch{}}
+  function editorCut(count){clearTimeout(cutTimer);const cut=$('editor-cut');const lines=['이걸 진짜\n가져가네?','아니 잠깐\n내 닉네임','수사 종료.\n범인은 너.','없는데요?\n없어졌어요.'];cut.querySelector('strong').textContent=lines[round++%lines.length];cut.querySelector('small').textContent=`(방금 ${count}개 없어짐 · 현장 검거)`;cut.hidden=false;cut.classList.remove('cut-in');void cut.offsetWidth;if(!reduced)cut.classList.add('cut-in');blip();cutTimer=setTimeout(()=>{cut.hidden=true;},reduced?900:1250);}
+  function effects(){fx?.clear();fx=LifterMotion.create(document,true,{x:innerWidth-160,y:innerHeight-220});return fx;}
+  async function raid(all){if(busy)return;const run=++operation;busy=true;$('raid').disabled=true;$('image-raid').disabled=true;try{const effect=effects();let count=0;if(all){const result=await engine.steal({onGlyph:effect.glyph});if(result.cancelled)return;count+=result.count;}if(run!==operation)return;count+=(await engine.scanImages({onGlyph:effect.glyph})).count;effect.finish(count);panel.sync();}finally{busy=false;$('raid').disabled=false;$('image-raid').disabled=false;}}
+  panel=LifterPanel.create(document,engine,{motion:true,compact:true,intro:'여긴 내장 놀이터. 권한 없이 바로 가져가 봐! 우클릭하면 형광펜 복사도 가능.'});
+  $('open-panel').onclick=()=>panel.show();$('raid').onclick=()=>raid(true);$('image-raid').onclick=()=>raid(false);$('reset').onclick=()=>{operation++;fx?.clear();engine.restore();panel.sync();};
+  let more=0;$('more-comments').onclick=async()=>{const p=document.createElement('div'),name=document.createElement('b'),text=document.createElement('p');name.textContent='late_to_the_party';text.textContent=['늦게 왔는데 L 남아 있나요?','라면은 아면인데 월요일은 왜 아직 있죠','ㄴㄴ 제 L 돌려주세요'][more++%3];p.append(name,text);$('more-comments').before(p);if(engine.status().remembered&&!engine.status().paused)await engine.steal();panel.sync();};
+  engine.init().then(()=>{panel.sync();if(engine.status().remembered)$('live').textContent='어제 가져간 거 아직 기억함. 오늘도 L 없음.';});
+  addEventListener('pagehide',()=>{clearTimeout(cutTimer);fx?.clear();engine.cancel();audio?.close();});
+})();

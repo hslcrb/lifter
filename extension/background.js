@@ -7,6 +7,7 @@ async function register(origin){const id=await siteId(origin);const work=registr
 async function offscreen(){if((await chrome.runtime.getContexts({contextTypes:['OFFSCREEN_DOCUMENT'],documentUrls:[chrome.runtime.getURL('offscreen.html')]})).length)return;if(!creating)creating=chrome.offscreen.createDocument({url:'offscreen.html',reasons:['WORKERS','BLOBS'],justification:'이미지의 L 글자를 기기 안에서만 인식하고 투명 PNG로 가공합니다.'}).finally(()=>creating=null);await creating;}
 chrome.action.onClicked.addListener(async tab=>{
  if(!tab.id)return;
+ if(!/^https?:/.test(tab.url||'')){await chrome.tabs.create({url:chrome.runtime.getURL('playground/index.html')});return;}
  try{await chrome.scripting.executeScript({target:{tabId:tab.id},files});await chrome.scripting.executeScript({target:{tabId:tab.id},func:()=>globalThis.__lifterInstalled?.then(panel=>panel.show())});await chrome.action.setBadgeText({tabId:tab.id,text:''});await chrome.action.setTitle({tabId:tab.id,title:'Lifter — L을 가져가~'});}
  catch{await chrome.action.setBadgeText({tabId:tab.id,text:'!'});await chrome.action.setBadgeBackgroundColor({tabId:tab.id,color:'#7654D6'});await chrome.action.setTitle({tabId:tab.id,title:'일반 웹사이트에서 Lifter를 눌러 줘.'});}
 });
