@@ -1,0 +1,21 @@
+{
+  "name": "lifter",
+  "version": "1.0.0",
+  "description": "L을 가져가~ — a reversible letter heist",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "pack": "python3 scripts/package.py"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  },
+  "private": true
+}

@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Lifter — L을 가져가~",
+  "version": "1.0.0",
+  "description": "웹페이지의 L을 주머니에 쏙! 클릭 한 번으로 수집하고 다시 돌려놓는 작은 장난.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "action": {"default_title": "Lifter — L을 가져가~", "default_popup": "popup.html", "default_icon": {"16":"assets/icon16.png","32":"assets/icon32.png","48":"assets/icon48.png","128":"assets/icon128.png"}},
+  "icons": {"16":"assets/icon16.png","32":"assets/icon32.png","48":"assets/icon48.png","128":"assets/icon128.png"},
+  "content_security_policy": {"extension_pages":"script-src 'self'; object-src 'self'"}
+}
