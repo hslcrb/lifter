@@ -1,26 +1,29 @@
-# Verification — 2026-10-27
+# Verification — floating heist 2.0.0 — 2026-10-27
 
 ## Passed
-- `npm test`: **18/18** tests; node:test + jsdom.
-- Content bridge singleton, sender guard, async collect/status/restore.
-- Same-node restoration, working link listener and unchanged href.
-- Uppercase/default and lowercase/opt-in; repeated clicks and dynamic additions.
-- Inputs, editable descendants, document.designMode, hidden elements, scripts/styles, SVG/select excluded.
-- Open shadow roots collected and restored.
-- Website changes retained; conflict count survives status lookup.
-- Geometry attempts bounded at 96, visible particles at 24; no geometry when motion disabled.
-- Cancellation between real DOM chunks.
-- Reduced-motion and disabled-motion: no overlay; explicit clear removes isolated overlay.
-- Popup collect/restore, restricted-page explanation and injection-error handling.
-- `node --check` on all four runtime JS files.
-- `python3 scripts/package.py`: Manifest V3, exact permission set and referenced files validated; distributable ZIP generated.
-- Editable Figma ready-state screenshot reviewed: header clipping fixed; compact 572px frame, clear controls and readable status.
+- `npm test`: **27/27**, node:test + jsdom.
+- Toolbar injection is a singleton and uses a service worker; manifest has no popup. Restricted injection gets a descriptive title and badge.
+- Panel persists after outside click; close/reopen retains restore state. Collapse, copy-mode selection, native copy handler and copy confirmation tested.
+- Default drag prevention; right-click enables highlighter mode. Only selected panel text is written; selection outside the panel is untouched.
+- Unicode L/l/ㄴ family, supplementary mathematical characters and attached accents counted as letters, restored exactly. NFD Hangul syllable components remain intact; standalone Jamo collected.
+- Same-node restoration, working link listeners, unchanged href; editable, hidden, script/style, SVG/select and document.designMode exclusions.
+- Dynamic additions, open shadow roots, application-edit conflicts, bounded geometry (96 attempts / 24 flights), chunk cancellation.
+- Reduced/disabled motion creates no overlay; cleanup cancels animation resources. Copy confetti is bounded and targeted.
+- Pending clipboard completion after close cannot revive effects; reentering copy mode cancels the previous auto-exit. Restore during a pending collection retains its result message.
+- `node --check` on all five runtime scripts.
+- `python3 scripts/package.py`: MV3, exact permissions, no host permissions and referenced files checked; `dist/lifter-2.0.0.zip` generated.
+- Editable Figma floating ready/collected/copy states and website composition updated. Screenshot inspected after correcting background paint cache; variable bindings retained, flight token 720ms.
 
 ## Independent review
-Three concrete findings were reproduced and fixed with RED → GREEN regressions: unbounded offscreen geometry, document editing mode, and lost restore-conflict records. Added real chunk-cancellation coverage.
+A fresh reviewer identified decomposed Hangul corruption and a late clipboard completion after panel close. Both were reproduced with failing regression tests and fixed. Copy-mode collapse-label and stale timer behavior were covered together; pending collection no longer overwrites restore feedback.
 
-## Not claimed
-The connected user browser could not reach the workspace HTTP server (connection refused). Inline data-URL preview was disallowed by browser security policy; no workaround was attempted. An actual unpacked Chrome/Edge installation and real-site flight rendering were **not** verified in this session. jsdom tests do not validate browser permission grants, actual Range geometry, CSS layout or Web Animations rendering. The included playground makes manual verification straightforward.
+## Limits of this verification
+An actual unpacked Chrome/Edge installation and real-site rendering have **not** been verified. The connected browser could not reach the workspace server in the earlier session; inline previews were blocked by browser policy. jsdom does not establish native Range geometry, trusted clipboard events in Shadow DOM, CSS layout, or Web Animations appearance. Figma screenshots show editable design output, not running-extension evidence.
 
 ## Manual acceptance
-Load extension/ in Chrome or Edge. Open a normal HTTPS page with L/l. Collect, reopen popup, restore, change options, disable animations, and refresh. Verify chrome://extensions reports no errors. Open docs/demo via the documented local server to check the motion and protected input/editable areas.
+1. Load `extension/` as an unpacked Chrome/Edge extension, or extract the installation ZIP. Reload the extension if upgrading from v1, then refresh existing test tabs.
+2. On an HTTPS page, click the toolbar icon; panel stays visible through outside clicks and scrolling. Collapse, close, reopen.
+3. Collect L/l/ㄴ/lookalikes; verify arcs/rings/bursts/impact confetti. Restore and verify links/inputs are unaffected.
+4. Right-click within panel → Copy. Drag text; Ctrl/Cmd+C or selection-copy button. Paste elsewhere and verify exact text and confetti. Other page selections remain native.
+5. Test OS reduced motion, effect toggle, narrow viewport and short window. Test `chrome://` restriction feedback.
+6. Serve `docs/demo/` using the README command for a reproducible playground with the actual engine, panel and motion modules.
