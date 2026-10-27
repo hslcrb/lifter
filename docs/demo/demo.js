@@ -1,3 +1,2 @@
-const engine=LifterEngine.create(document),$=id=>document.getElementById(id);let fx;
-$('steal').onclick=async()=>{ $('steal').disabled=true;fx?.clear();fx=LifterMotion.create(document,$('motion').checked);const r=await engine.steal({lowercase:$('lowercase').checked,onGlyph:fx.glyph});fx.finish();$('count').textContent=r.total;$('status').textContent=r.count?`${r.count}개의 L을 챙겼어!`:'가져갈 L이 없어.';$('restore').disabled=!r.total;$('steal').disabled=false;};
-$('restore').onclick=()=>{fx?.clear();const r=engine.restore();$('count').textContent='0';$('status').textContent=`${r.restored}개의 L을 돌려놨어.`;$('restore').disabled=true;};
+const panel=LifterPanel.create(document,LifterEngine.create(document));
+document.getElementById('show').onclick=()=>panel.show();

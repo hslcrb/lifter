@@ -11,3 +11,9 @@ Task: create Lifter browser extension, public repository and editable Figma UI.
 - 18 tests pass, runtime syntax checks pass, installation ZIP validated.
 - Browser live-install verification remains manual, documented in VERIFICATION.md.
 - Integration: explicit two-parent merge onto main, no PR / CI; remove merged task branch.
+
+## v2 revision
+- Toolbar popup replaced by a fixed in-page Shadow DOM panel; copy highlighter mode, mandatory lowercase/ㄴ family, bounded multi-stage effects.
+- Curated lookalikes avoid I/1 and protect NFD Hangul syllables. Runtime still local and dependency-free.
+- 27 tests pass; independent review findings fixed. Figma same file updated with three panel states, website composition and 720ms flight token.
+- Actual browser installation/native clipboard/rendering remains explicitly unverified.
