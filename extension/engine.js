@@ -11,6 +11,14 @@
     }
   }
   const pattern = new RegExp('['+[...letters].join('')+']\\p{M}*','gu');
+  function korean(text) {
+    // Deliberately playful pronunciation, not a Korean linguistic normalizer.
+    return text.replace(/롯데/g,'오떼').replace(/[가-힣]/g, char => {
+      const code=char.charCodeAt(0)-0xac00, lead=Math.floor(code/588), vowel=Math.floor(code%588/28), tail=code%28;
+      const tails={8:0,9:1,10:16,11:17,12:19,13:25,14:26,15:27};
+      return String.fromCharCode(0xac00+(lead===5?11:lead)*588+vowel*28+(tails[tail]??tail));
+    });
+  }
   function create(doc) {
     const saved = new Map();
     let busy = false, generation = 0;
@@ -63,10 +71,12 @@
               }
               const collectible = (letter, index) => !/^[ᄂᆫ]/u.test(letter) || standaloneJamo.has(index);
               let removed = 0;
-              const after = before.replace(pattern, (letter, index) => {
+              let after = before.replace(pattern, (letter, index) => {
                 if (!collectible(letter, index)) return letter;
                 removed++; return '';
               });
+              const spoken=korean(after);
+              if(spoken!==after){for(let i=0;i<after.length;i++)if(after[i]!==spoken[i])removed++;after=spoken;}
               if (removed) {
                 if (onGlyph) for (const hit of before.matchAll(pattern)) {
                   if (!collectible(hit[0], hit.index)) continue;
@@ -107,5 +117,5 @@
     }
     return { steal, restore, status, cancel() { generation++; } };
   }
-  globalThis.LifterEngine = { create };
+  globalThis.LifterEngine = { create, korean };
 })();
