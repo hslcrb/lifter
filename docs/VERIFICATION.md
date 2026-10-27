@@ -19,3 +19,7 @@ No actual unpacked Chrome extension installation has been exercised. Node verifi
 
 ## Manual acceptance
 Install extension ZIP, reload extension and test page. Collect on an HTTPS site, allow that origin, verify Korean examples. Reload and navigate within the origin: text is reapplied after document_idle (a first-paint flash is possible). Add dynamic text and delay image loading. Click image scan and allow needed image origins; verify holes expose the website underneath. Restore during OCR, then mutate page: it remains paused. Forget, reload and verify no automatic collection. Test copy mode, reduced motion and restrictive CSP pages. Model processing is local; image downloads still use the network.
+
+## v3.1 playground
+
+47 tests passed, including restore/forget during asynchronous raids and initialization. Chromium cloud browser: visual inspection, full text/Hangul theft, poster transparency, restore and remembered reload verified on served identical playground assets. Native extension installation/optional-host permissions remain unverified. Poster unit test checks all 7 clear rectangles are bounded and restoration resets the PNG; actual alpha implementation uses canvas clearRect.
